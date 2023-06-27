@@ -1,5 +1,6 @@
+# Build stage
 # Use node version 20.1.0
-FROM node:20.1.0
+FROM node:20.1.0 AS build
 
 LABEL maintainer="Dmytro Benko <dbenko1@myseneca.ca>"
 LABEL description="Fragments node.js microservice"
@@ -28,6 +29,20 @@ RUN npm install
 
 # Copy src to /app/src/
 COPY ./src ./src
+
+# Deploy Stage
+FROM node:20.1.0 AS deploy
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm ci --only=production
+
+# Copy our built js source code from build image
+COPY --from=build /app/dist ./dist
 
 # Copy our HTPASSWD file
 COPY ./tests/.htpasswd ./tests/.htpasswd

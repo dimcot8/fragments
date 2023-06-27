@@ -9,7 +9,7 @@ const { createSuccessResponse, createErrorResponse } = require('./response'); //
 
 // version and author from our package.json file
 const { version, author } = require('../package.json');
-console.log({ env: process.env });
+//console.log({ env: process.env });
 const logger = require('./logger');
 const pino = require('pino-http')({
   // Use our default logger instance, which is already configured
