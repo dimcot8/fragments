@@ -42,7 +42,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 # Copy our built js source code from build image
-COPY --from=build /app/dist ./dist
+COPY --from=build /app ./
 
 # Copy our HTPASSWD file
 COPY ./tests/.htpasswd ./tests/.htpasswd
