@@ -27,6 +27,7 @@ COPY package*.json ./
 # Install node dependencies defined in package-lock.json
 RUN npm install
 
+
 # Copy src to /app/src/
 COPY ./src ./src
 
