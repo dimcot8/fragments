@@ -4,17 +4,7 @@ const { randomUUID } = require('crypto');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
 
-const validTypes = [
-  `text/plain`,
-
-  `text/markdown`,
-  `text/html`,
-  `application/json`,
-  `image/png`,
-  `image/jpeg`,
-  `image/webp`,
-  `image/gif`,
-];
+const validTypes = [`text/plain`, `text/markdown`, `text/html`, `application/json`];
 
 // Functions for working with fragment metadata/data using our DB
 const {
@@ -140,7 +130,33 @@ class Fragment {
    * @returns {Array<string>} list of supported mime types
    */
   get formats() {
-    return validTypes;
+    let formats;
+    if (this.type.includes('text/plain')) {
+      formats = ['text/plain', 'text/markdown'];
+    } else if (this.type.includes('text/markdown')) {
+      formats = ['text/markdown', 'text/html', 'text/plain'];
+    } else if (this.type.includes('text/html')) {
+      formats = ['text/html', 'text/plain'];
+    } else if (this.type.includes('application/json')) {
+      formats = ['application/json', 'text/plain'];
+    }
+    return formats;
+  }
+
+  static convert(data, ext) {
+    if (ext === 'html') {
+      let MarkdownIt = require('markdown-it');
+      let md = new MarkdownIt();
+      return md.render(data.toString());
+    }
+    return data;
+  }
+
+  static extToType(ext) {
+    const extensions = ['txt', 'md', 'html', 'json'];
+    const types = ['text/plain', 'text/markdown', 'text/html', 'application/json'];
+    const index = extensions.findIndex((extension) => extension === ext);
+    return types[index];
   }
 
   /**
@@ -150,7 +166,7 @@ class Fragment {
    */
   static isSupportedType(value) {
     const { type } = contentType.parse(value);
-    return validTypes.includes(type) || type.includes('text/');
+    return validTypes.includes(type);
   }
 }
 

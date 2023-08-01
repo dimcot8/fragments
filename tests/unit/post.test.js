@@ -49,7 +49,7 @@ describe('POST /v1/fragments', () => {
       .set('Content-type', 'text/plain')
       .auth('user1@email.com', 'password1');
     expect(res.header.location).toContain(
-      `https://localhost:8080/v1//fragments/${res.body.fragment.id}`
+      `http://localhost:8080/v1/fragments/${res.body.fragment.id}`
     );
   });
 });

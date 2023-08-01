@@ -1,5 +1,7 @@
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 const { Fragment } = require('../../model/fragment');
+const logger = require('../../logger');
+const path = require('path');
 
 async function getFragments(req, res) {
   try {
@@ -8,6 +10,43 @@ async function getFragments(req, res) {
     res.status(200).json(createSuccessResponse({ fragments: fragments }));
   } catch (err) {
     res.status(404).json(createErrorResponse(404, 'An error occurs'));
+  }
+}
+
+async function getFragment(req, res) {
+  const pathName = path.parse(req.params.id);
+  const ext = pathName.ext.split('.').pop();
+  const id = pathName.name;
+
+  try {
+    const fragment = await Fragment.byId(req.user, id);
+    const fragmentData = await fragment.getData();
+
+    if (ext === '') {
+      res.setHeader('Content-Type', fragment.type);
+      res.status(200).send(fragmentData);
+      logger.info(
+        { fragmentData: fragmentData, contentType: fragment.type },
+        `Got fragments' data!`
+      );
+      return;
+    }
+
+    const type = Fragment.extToType(ext);
+    if (!Fragment.isSupportedType(type) || !fragment.formats.includes(type)) {
+      res.status(415).json(createErrorResponse(415, 'Unsupported conversion type!'));
+    } else {
+      let result = await Fragment.convert(fragmentData, ext);
+      res.setHeader('Content-Type', type);
+      res.status(200).send(result);
+      logger.info(
+        { convertedFragmentData: result, contentType: type },
+        `Fragment data successfully converted!`
+      );
+    }
+  } catch (err) {
+    logger.error({ err }, 'Error getting a fragment by ID');
+    res.status(404).json(createErrorResponse(404, 'Fragment not found'));
   }
 }
 
@@ -20,5 +59,6 @@ async function getFragmentInfo(req, res) {
   }
 }
 
+module.exports.getFragment = getFragment;
 module.exports.getFragments = getFragments;
 module.exports.getFragmentInfo = getFragmentInfo;
