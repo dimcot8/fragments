@@ -1,6 +1,6 @@
 # Build stage
 # Use node version 20.1.0
-FROM node:20.1.0 AS build
+FROM --platform=linux/amd64 node:20.1.0 AS build
 
 LABEL maintainer="Dmytro Benko <dbenko1@myseneca.ca>"
 LABEL description="Fragments node.js microservice"
@@ -32,7 +32,7 @@ RUN npm install
 COPY ./src ./src
 
 # Deploy Stage
-FROM node:20.1.0 AS deploy
+FROM --platform=linux/amd64 node:20.1.0 AS deploy
 
 WORKDIR /app
 
