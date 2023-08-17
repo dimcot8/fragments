@@ -33,7 +33,8 @@ RUN npm install
 COPY ./src ./src
 
 # Deploy Stage
-FROM --platform=linux/amd64 node:20.1.0 AS deploy
+#FROM --platform=linux/amd64 node:20.1.0 AS deploy
+FROM node:20.1.0 AS deploy
 
 WORKDIR /app
 
