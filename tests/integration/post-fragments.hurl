@@ -6,7 +6,7 @@ Authorization: Basic dXNlcjFAZW1haWwuY29tOnBhc3N3b3JkMQ==
 Content-Type: text/plain
 `This is a fragment`
 
-HTTP/1.1 415
+HTTP/1.1 201
 [Asserts]
 header "Location" matches "http:\/\/localhost:8080\/v1\/fragments\/[A-Za-z0-9_-]+"
 # header "Location" matches "^http:\/\/localhost:8080\/v1\/fragments\/[A-Za-z0-9_-]+$"

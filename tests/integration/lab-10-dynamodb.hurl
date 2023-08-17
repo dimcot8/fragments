@@ -5,7 +5,7 @@ Content-Type: application/json
 
 { "service": "DynamoDB" }
 
-HTTP/1.1 415
+HTTP/1.1 201
 [Asserts]
 header "Content-Type" == "application/json; charset=utf-8"
 
