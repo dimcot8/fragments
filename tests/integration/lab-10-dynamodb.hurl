@@ -5,7 +5,7 @@ Content-Type: application/json
 
 { "service": "DynamoDB" }
 
-HTTP/1.1 201
+HTTP/1.1 415
 [Asserts]
 header "Content-Type" == "application/json; charset=utf-8"
 jsonpath "$.fragment.type" == "application/json"
