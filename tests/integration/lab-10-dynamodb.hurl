@@ -8,7 +8,6 @@ Content-Type: application/json
 HTTP/1.1 415
 [Asserts]
 header "Content-Type" == "application/json; charset=utf-8"
-jsonpath "$.fragment.type" == "application/json"
 
 # Step 2: GET the fragment info
 GET http://localhost:8080

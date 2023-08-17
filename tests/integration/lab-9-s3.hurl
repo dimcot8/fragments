@@ -8,7 +8,7 @@ HTTP/1.1 415
 url: header "Location"
 
 
-HTTP/1.1 200
+HTTP 1.1 200
 Content-Type: text/plain
 ```Hello S3!```
 
