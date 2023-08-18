@@ -22,16 +22,6 @@ describe('POST /v1/fragments', () => {
     expect(res.body.status).toBe('ok');
   });
 
-  test('authenticated users post an unsupported fragment', async () => {
-    const res = await request(app)
-      .post('/v1/fragments')
-      .send('this is a fragment')
-      .set('Content-type', 'image/gif')
-      .auth('user1@email.com', 'password1');
-    expect(res.statusCode).toBe(415);
-    expect(res.body.status).toBe('error');
-  });
-
   test('responses include all necessary and expected properties', async () => {
     const res = await request(app)
       .post('/v1/fragments')

@@ -3,10 +3,20 @@
 const { randomUUID } = require('crypto');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
+const sharp = require('sharp');
 
-const validTypes = [`text/plain`, `text/markdown`, `text/html`, `application/json`];
+const validTypes = [
+  `text/plain`,
+  `text/plain; charset=utf-8`,
+  `text/markdown`,
+  `text/html`,
+  `application/json`,
+  `image/png`,
+  `image/jpeg`,
+  `image/webp`,
+  `image/gif`,
+];
 
-// Functions for working with fragment metadata/data using our DB
 const {
   readFragment,
   writeFragment,
@@ -131,6 +141,8 @@ class Fragment {
    */
   get formats() {
     let formats;
+    let imageFormats = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+
     if (this.type.includes('text/plain')) {
       formats = ['text/plain', 'text/markdown'];
     } else if (this.type.includes('text/markdown')) {
@@ -139,6 +151,13 @@ class Fragment {
       formats = ['text/html', 'text/plain'];
     } else if (this.type.includes('application/json')) {
       formats = ['application/json', 'text/plain'];
+    } else if (
+      this.type === 'image/png' ||
+      this.type === 'image/jpeg' ||
+      this.type === 'image/webp' ||
+      this.type === 'image/gif'
+    ) {
+      formats = imageFormats;
     }
     return formats;
   }
@@ -149,12 +168,25 @@ class Fragment {
       let md = new MarkdownIt();
       return md.render(data.toString());
     }
+    if (ext === 'png' || ext === 'jpeg' || ext === 'gif' || ext === 'webp') {
+      return sharp(data).toFormat(ext).toBuffer();
+    }
+
     return data;
   }
 
   static extToType(ext) {
-    const extensions = ['txt', 'md', 'html', 'json'];
-    const types = ['text/plain', 'text/markdown', 'text/html', 'application/json'];
+    const extensions = ['txt', 'md', 'html', 'json', 'png', 'jpeg', 'webp', 'gif'];
+    const types = [
+      'text/plain',
+      'text/markdown',
+      'text/html',
+      'application/json',
+      'image/png',
+      'image/jpeg',
+      'image/webp',
+      'image/gif',
+    ];
     const index = extensions.findIndex((extension) => extension === ext);
     return types[index];
   }

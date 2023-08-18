@@ -1,19 +1,38 @@
+
 POST http://localhost:8080/v1/fragments
+
 Authorization: Basic dXNlcjFAZW1haWwuY29tOnBhc3N3b3JkMQ==
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
 ```Hello S3!```
 
 HTTP/1.1 201
+
+[Asserts]
+
+jsonpath "$.status" == "ok"
+jsonpath "$.fragment.type" == "text/plain; charset=utf-8"
+
 [Captures]
 url: header "Location"
 
-GET http://localhost:8080/v1/fragments
+GET {{url}}
 Authorization: Basic dXNlcjFAZW1haWwuY29tOnBhc3N3b3JkMQ==
 
 HTTP/1.1 200
-Content-Type: text/plain
-```Hello S3!```
+Content-Type: text/plain; charset=utf-8
 
-GET http://localhost:8080/v1/fragments
+[Asserts]
+body == "Hello S3!"
+
+DELETE {{url}}
 Authorization: Basic dXNlcjFAZW1haWwuY29tOnBhc3N3b3JkMQ==
 
+HTTP/1.1 200
+
+[Asserts]
+jsonpath "$.status" == "ok"
+
+GET {{url}}
+Authorization: Basic dXNlcjFAZW1haWwuY29tOnBhc3N3b3JkMQ==
+
+HTTP/1.1 404
